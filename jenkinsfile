@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/surajdhakad007/devops-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t devops-app .'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                sh 'docker tag devops-app surajdhakad/devops-app'
+                sh 'docker push surajdhakad/devops-app'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s/'
+            }
+        }
+    }
+}
